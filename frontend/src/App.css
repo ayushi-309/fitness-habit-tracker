@@ -1,0 +1,145 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #1e293b;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 8%;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.navbar h2 {
+  color: #2563eb;
+  font-size: 26px;
+}
+
+.navbar span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 70px 24px;
+}
+
+.welcome {
+  margin-bottom: 50px;
+}
+
+.eyebrow {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  margin-bottom: 18px;
+}
+
+.welcome h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+
+.welcome > p:not(.eyebrow) {
+  max-width: 500px;
+  color: #64748b;
+  line-height: 1.7;
+  margin-top: 18px;
+}
+
+.welcome button {
+  margin-top: 24px;
+  padding: 13px 26px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.welcome button:hover {
+  background: #1d4ed8;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.feature-card {
+  background: white;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.feature-card h3 {
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+
+.feature-card p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 18px 5%;
+  }
+
+  .navbar span {
+    font-size: 12px;
+  }
+
+  .dashboard {
+    padding: 45px 20px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #16a34a;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
