@@ -53,6 +53,7 @@ body {
 }
 
 .welcome h1 {
+  color: #1e293b;
   font-size: clamp(32px, 5vw, 52px);
   line-height: 1.2;
   margin-bottom: 5px;
@@ -142,4 +143,31 @@ body {
   background: #16a34a;
   border-radius: 10px;
   transition: width 0.3s ease;
+}
+
+.feature-card input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 12px 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.feature-card button {
+  padding: 8px 14px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.feature-card button:hover {
+  background: #1d4ed8;
+}
+
+.feature-card button:active {
+  transform: scale(0.98);
 }

@@ -1,13 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
   const [started, setStarted] = useState(false)
-  const [habits, setHabits] = useState([
-    { id: 1, name: 'Drink water', completed: false },
-    { id: 2, name: 'Exercise', completed: false },
-    { id: 3, name: 'Read for 20 minutes', completed: false },
-  ])
+  const [habits, setHabits] = useState(() => {
+    const savedHabits = localStorage.getItem('fittrack-habits')
+
+    if (savedHabits) {
+      return JSON.parse(savedHabits)
+    }
+
+    return [
+      { id: 1, name: 'Drink water', completed: false },
+      { id: 2, name: 'Exercise', completed: false },
+      { id: 3, name: 'Read for 20 minutes', completed: false },
+    ]
+  })
+
+  useEffect(() => {
+    localStorage.setItem(
+      'fittrack-habits',
+      JSON.stringify(habits)
+    )
+  }, [habits])
+  const [newHabit, setNewHabit] = useState('')
+
   const completedCount = habits.filter(
     (habit) => habit.completed
   ).length
@@ -17,6 +34,20 @@ function App() {
     totalHabits === 0 ? 0 : (completedCount / totalHabits) * 100
 
   const progressPercentage = Math.round(progress)
+  const addHabit = () => {
+    if (newHabit.trim() === '') {
+      return
+    }
+
+    const habit = {
+      id: Date.now(),
+      name: newHabit.trim(),
+      completed: false,
+    }
+
+    setHabits((previousHabits) => [...previousHabits, habit])
+    setNewHabit('')
+  }
 
   return (
     <div className="app">
@@ -53,6 +84,20 @@ function App() {
         <section className="features">
           <div className="feature-card">
             <h3>Daily Habits</h3>
+            <input
+              type="text"
+              placeholder="Enter a new habit..."
+              value={newHabit}
+              onChange={(e) => setNewHabit(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  addHabit()
+                }
+              }}
+            />
+            <button onClick={addHabit}>
+              Add Habit
+            </button>
             <p>
               Completed: {completedCount} / {totalHabits}
               {' '}({progressPercentage}%)
@@ -86,6 +131,17 @@ function App() {
                   {' '}
                   {habit.name}
                 </label>
+                <button
+                  onClick={() => {
+                    setHabits((previousHabits) =>
+                      previousHabits.filter(
+                        (item) => item.id !== habit.id
+                      )
+                    )
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             ))}
           </div>
