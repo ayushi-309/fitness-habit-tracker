@@ -54,17 +54,17 @@ function App() {
   const progressPercentage = Math.round(progress)
 
   const [streak, setStreak] = useState(() => {
-  const savedStreak = localStorage.getItem('fittrack-streak')
+    const savedStreak = localStorage.getItem('fittrack-streak')
 
-  return savedStreak ? Number(savedStreak) : 0
-})
+    return savedStreak ? Number(savedStreak) : 0
+  })
 
-useEffect(() => {
-  localStorage.setItem(
-    'fittrack-streak',
-    streak.toString()
-  )
-}, [streak])
+  useEffect(() => {
+    localStorage.setItem(
+      'fittrack-streak',
+      streak.toString()
+    )
+  }, [streak])
 
   const addHabit = () => {
     if (newHabit.trim() === '') {
@@ -166,6 +166,10 @@ useEffect(() => {
                       )
 
                       setLastCompletedDate(today)
+
+                      if (!habit.completed) {
+                        setStreak((previousStreak) => previousStreak + 1)
+                      }
                     }}
                   />
                   {' '}
