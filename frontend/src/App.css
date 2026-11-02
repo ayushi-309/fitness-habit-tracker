@@ -171,3 +171,12 @@ body {
 .feature-card button:active {
   transform: scale(0.98);
 }
+.feature-card .delete-button {
+  background: #fee2e2;
+  color: #dc2626;
+  margin-left: 10px;
+}
+
+.feature-card .delete-button:hover {
+  background: #fecaca;
+}

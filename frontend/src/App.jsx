@@ -24,6 +24,24 @@ function App() {
     )
   }, [habits])
   const [newHabit, setNewHabit] = useState('')
+  const [lastCompletedDate, setLastCompletedDate] = useState(
+    localStorage.getItem('fittrack-last-date') || ''
+  )
+  useEffect(() => {
+    if (lastCompletedDate) {
+      localStorage.setItem(
+        'fittrack-last-date',
+        lastCompletedDate
+      )
+    }
+  }, [lastCompletedDate])
+
+  const today = new Date().toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+
 
   const completedCount = habits.filter(
     (habit) => habit.completed
@@ -34,6 +52,20 @@ function App() {
     totalHabits === 0 ? 0 : (completedCount / totalHabits) * 100
 
   const progressPercentage = Math.round(progress)
+
+  const [streak, setStreak] = useState(() => {
+  const savedStreak = localStorage.getItem('fittrack-streak')
+
+  return savedStreak ? Number(savedStreak) : 0
+})
+
+useEffect(() => {
+  localStorage.setItem(
+    'fittrack-streak',
+    streak.toString()
+  )
+}, [streak])
+
   const addHabit = () => {
     if (newHabit.trim() === '') {
       return
@@ -84,6 +116,12 @@ function App() {
         <section className="features">
           <div className="feature-card">
             <h3>Daily Habits</h3>
+            <p className="current-date">
+              📅 Today: {today}
+            </p>
+            <p>
+              🔥 Current Streak: {streak}
+            </p>
             <input
               type="text"
               placeholder="Enter a new habit..."
@@ -126,12 +164,15 @@ function App() {
                             : item
                         )
                       )
+
+                      setLastCompletedDate(today)
                     }}
                   />
                   {' '}
                   {habit.name}
                 </label>
                 <button
+                  className="delete-button"
                   onClick={() => {
                     setHabits((previousHabits) =>
                       previousHabits.filter(
