@@ -1,4 +1,5 @@
 
+/* Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -6,27 +7,43 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   background: #f4f7fb;
   color: #1e293b;
 }
 
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+/* Main App */
 .app {
   min-height: 100vh;
 }
 
+/* Navbar */
 .navbar {
+  width: 100%;
+  min-height: 75px;
+  padding: 15px 7%;
+  background: #ffffff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 22px 8%;
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
 .navbar h2 {
   color: #2563eb;
-  font-size: 26px;
+  font-size: 27px;
+  font-weight: 700;
 }
 
 .navbar span {
@@ -34,149 +51,275 @@ body {
   font-size: 14px;
 }
 
+/* Dashboard */
 .dashboard {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 70px 24px;
+  width: 100%;
+  max-width: 1250px;
+  margin: auto;
+  padding: 40px 25px;
 }
 
+/* Welcome Section */
 .welcome {
-  margin-bottom: 50px;
+  text-align: center;
+  padding: 55px 20px;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-radius: 18px;
 }
 
 .eyebrow {
   color: #2563eb;
   font-size: 13px;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  margin-bottom: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
 }
 
 .welcome h1 {
-  color: #1e293b;
-  font-size: clamp(32px, 5vw, 52px);
-  line-height: 1.2;
+  font-size: clamp(28px, 5vw, 42px);
+  color: #1e3a8a;
   margin-bottom: 5px;
 }
 
 .welcome > p:not(.eyebrow) {
-  max-width: 500px;
-  color: #64748b;
-  line-height: 1.7;
+  color: #475569;
   margin-top: 18px;
+  line-height: 1.7;
 }
 
 .welcome button {
-  margin-top: 24px;
-  padding: 13px 26px;
+  margin-top: 25px;
+  padding: 13px 30px;
   background: #2563eb;
   color: white;
-  border: none;
   border-radius: 8px;
-  font-size: 15px;
-  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
 .welcome button:hover {
   background: #1d4ed8;
+  transform: translateY(-2px);
 }
 
+/* Feature Cards Layout */
 .features {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 25px;
+  align-items: start;
 }
 
+/* Feature Card */
 .feature-card {
-  background: white;
-  padding: 28px;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 15px;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+  transition: 0.3s;
 }
 
 .feature-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.09);
+  transform: translateY(-3px);
 }
 
 .feature-card h3 {
-  margin-bottom: 12px;
-  font-size: 20px;
+  font-size: 21px;
+  color: #1e3a8a;
+  margin-bottom: 15px;
+}
+
+.feature-card h4 {
+  font-size: 16px;
+  color: #334155;
+  margin: 20px 0 12px;
 }
 
 .feature-card p {
   color: #64748b;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 12px;
 }
 
-@media (max-width: 700px) {
-  .navbar {
-    padding: 18px 5%;
-  }
-
-  .navbar span {
-    font-size: 12px;
-  }
-
-  .dashboard {
-    padding: 45px 20px;
-  }
-
-  .features {
-    grid-template-columns: 1fr;
-  }
+.current-date {
+  color: #2563eb !important;
+  font-weight: 600;
 }
 
+/* Inputs */
+.feature-card input[type="text"],
+.feature-card input[type="number"],
+.feature-card select {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 8px 0;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+  color: #1e293b;
+  transition: 0.2s;
+}
 
+.feature-card input:focus,
+.feature-card select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Main Buttons */
+.feature-card > button {
+  padding: 11px 18px;
+  margin: 8px 0;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.feature-card > button:hover {
+  background: #1d4ed8;
+}
+
+/* Progress Bar */
 .progress-track {
   width: 100%;
-  height: 8px;
+  height: 11px;
   background: #e2e8f0;
-  border-radius: 10px;
+  border-radius: 20px;
   overflow: hidden;
-  margin: 14px 0;
+  margin: 12px 0 20px;
 }
 
 .progress-fill {
   height: 100%;
-  background: #16a34a;
-  border-radius: 10px;
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #2563eb, #60a5fa);
+  border-radius: 20px;
+  transition: width 0.4s ease;
 }
 
-.feature-card input[type="text"] {
-  width: 100%;
-  padding: 10px 12px;
-  margin: 12px 0;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+/* Habit Items */
+.habit-item,
+.workout-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 13px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.habit-item label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #334155;
   font-size: 14px;
-}
-
-.feature-card button {
-  padding: 8px 14px;
-  margin: 5px 0;
-  border: none;
-  border-radius: 6px;
-  background: #2563eb;
-  color: white;
   cursor: pointer;
 }
 
-.feature-card button:hover {
-  background: #1d4ed8;
+.habit-item input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #2563eb;
+  cursor: pointer;
 }
 
-.feature-card button:active {
-  transform: scale(0.98);
-}
+/* Delete Button */
 .feature-card .delete-button {
+  padding: 7px 12px;
   background: #fee2e2;
   color: #dc2626;
-  margin-left: 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .feature-card .delete-button:hover {
   background: #fecaca;
+}
+
+/* Workout History */
+.workout-item {
+  align-items: center;
+}
+
+.workout-item p {
+  margin: 0;
+}
+
+.workout-item small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* AI Trainer */
+.trainer-result {
+  margin-top: 15px;
+  padding: 18px;
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  border-radius: 10px;
+}
+
+.trainer-result h4 {
+  color: #1d4ed8;
+  margin: 0 0 8px;
+}
+
+.trainer-result p {
+  color: #475569;
+  margin: 0;
+}
+
+/* Tablet and Mobile Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 5%;
+  }
+
+  .dashboard {
+    padding: 25px 16px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .welcome {
+    padding: 40px 15px;
+  }
+
+  .feature-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+  }
+
+  .navbar h2 {
+    font-size: 24px;
+  }
+
+  .welcome h1 {
+    font-size: 28px;
+  }
+
+  .habit-item,
+  .workout-item {
+    align-items: flex-start;
+  }
 }

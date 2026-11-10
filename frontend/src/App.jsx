@@ -1,75 +1,101 @@
+
 import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
   const [started, setStarted] = useState(false)
+
+  // Daily Habits
   const [habits, setHabits] = useState(() => {
-    const savedHabits = localStorage.getItem('fittrack-habits')
+    try {
+      const saved = localStorage.getItem('fittrack-habits')
 
-    if (savedHabits) {
-      return JSON.parse(savedHabits)
+      return saved
+        ? JSON.parse(saved)
+        : [
+            { id: 1, name: 'Drink water', completed: false },
+            { id: 2, name: 'Exercise', completed: false },
+            { id: 3, name: 'Read for 20 minutes', completed: false },
+          ]
+    } catch {
+      return []
     }
-
-    return [
-      { id: 1, name: 'Drink water', completed: false },
-      { id: 2, name: 'Exercise', completed: false },
-      { id: 3, name: 'Read for 20 minutes', completed: false },
-    ]
   })
 
-  useEffect(() => {
-    localStorage.setItem(
-      'fittrack-habits',
-      JSON.stringify(habits)
-    )
-  }, [habits])
   const [newHabit, setNewHabit] = useState('')
-  const [lastCompletedDate, setLastCompletedDate] = useState(
-    localStorage.getItem('fittrack-last-date') || ''
-  )
-  useEffect(() => {
-    if (lastCompletedDate) {
-      localStorage.setItem(
-        'fittrack-last-date',
-        lastCompletedDate
-      )
-    }
-  }, [lastCompletedDate])
 
-  const today = new Date().toLocaleDateString('en-IN', {
+  // Current Date
+  const now = new Date()
+
+  const today = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join('-')
+
+  const displayDate = now.toLocaleDateString('en-IN', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   })
 
+  // Streak
+  const [lastCompletedDate, setLastCompletedDate] = useState(
+    () => localStorage.getItem('fittrack-last-date') || ''
+  )
 
+  const [streak, setStreak] = useState(() => {
+    return Number(localStorage.getItem('fittrack-streak')) || 0
+  })
+
+  // Fitness Tracker
+  const [workouts, setWorkouts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('fittrack-workouts')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
+
+  const [workoutName, setWorkoutName] = useState('')
+  const [workoutDuration, setWorkoutDuration] = useState('')
+
+  // AI Trainer
+  const [fitnessGoal, setFitnessGoal] = useState('general')
+
+  // Save data in localStorage
+  useEffect(() => {
+    localStorage.setItem('fittrack-habits', JSON.stringify(habits))
+  }, [habits])
+
+  useEffect(() => {
+    localStorage.setItem('fittrack-last-date', lastCompletedDate)
+  }, [lastCompletedDate])
+
+  useEffect(() => {
+    localStorage.setItem('fittrack-streak', String(streak))
+  }, [streak])
+
+  useEffect(() => {
+    localStorage.setItem('fittrack-workouts', JSON.stringify(workouts))
+  }, [workouts])
+
+  // Habit Progress
   const completedCount = habits.filter(
     (habit) => habit.completed
   ).length
 
   const totalHabits = habits.length
-  const progress =
-    totalHabits === 0 ? 0 : (completedCount / totalHabits) * 100
 
-  const progressPercentage = Math.round(progress)
+  const progressPercentage =
+    totalHabits === 0
+      ? 0
+      : Math.round((completedCount / totalHabits) * 100)
 
-  const [streak, setStreak] = useState(() => {
-    const savedStreak = localStorage.getItem('fittrack-streak')
-
-    return savedStreak ? Number(savedStreak) : 0
-  })
-
-  useEffect(() => {
-    localStorage.setItem(
-      'fittrack-streak',
-      streak.toString()
-    )
-  }, [streak])
-
+  // Add Habit
   const addHabit = () => {
-    if (newHabit.trim() === '') {
-      return
-    }
+    if (!newHabit.trim()) return
 
     const habit = {
       id: Date.now(),
@@ -77,12 +103,97 @@ function App() {
       completed: false,
     }
 
-    setHabits((previousHabits) => [...previousHabits, habit])
+    setHabits((previousHabits) => [
+      ...previousHabits,
+      habit,
+    ])
+
     setNewHabit('')
   }
 
+  // Delete Habit
+  const deleteHabit = (id) => {
+    setHabits((previousHabits) =>
+      previousHabits.filter((habit) => habit.id !== id)
+    )
+  }
+
+  // Toggle Habit
+  const toggleHabit = (habit) => {
+    const willComplete = !habit.completed
+
+    setHabits((previousHabits) =>
+      previousHabits.map((item) =>
+        item.id === habit.id
+          ? { ...item, completed: willComplete }
+          : item
+      )
+    )
+
+    if (willComplete && lastCompletedDate !== today) {
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+
+      const yesterdayString = [
+        yesterday.getFullYear(),
+        String(yesterday.getMonth() + 1).padStart(2, '0'),
+        String(yesterday.getDate()).padStart(2, '0'),
+      ].join('-')
+
+      if (lastCompletedDate === yesterdayString) {
+        setStreak((previousStreak) => previousStreak + 1)
+      } else {
+        setStreak(1)
+      }
+
+      setLastCompletedDate(today)
+    }
+  }
+
+  // Add Workout
+  const addWorkout = () => {
+    if (
+      !workoutName.trim() ||
+      workoutDuration === '' ||
+      !Number.isFinite(Number(workoutDuration)) ||
+      Number(workoutDuration) <= 0
+    ) {
+      return
+    }
+
+    const newWorkout = {
+      id: Date.now(),
+      name: workoutName.trim(),
+      duration: Number(workoutDuration),
+      date: today,
+    }
+
+    setWorkouts((previousWorkouts) => [
+      ...previousWorkouts,
+      newWorkout,
+    ])
+
+    setWorkoutName('')
+    setWorkoutDuration('')
+  }
+
+  // Delete Workout
+  const deleteWorkout = (id) => {
+    setWorkouts((previousWorkouts) =>
+      previousWorkouts.filter((workout) => workout.id !== id)
+    )
+  }
+
+  // Total Workout Duration
+  const totalWorkoutMinutes = workouts.reduce(
+    (total, workout) => total + workout.duration,
+    0
+  )
+
   return (
     <div className="app">
+
+      {/* Navbar */}
       <header className="navbar">
         <h2>FitTrack</h2>
         <span>Fitness & Habit Tracker</span>
@@ -90,15 +201,21 @@ function App() {
 
       <main className="dashboard">
 
+        {/* Welcome Section */}
         {!started ? (
           <section className="welcome">
-            <p className="eyebrow">YOUR PERSONAL FITNESS SPACE</p>
+            <p className="eyebrow">
+              YOUR PERSONAL FITNESS SPACE
+            </p>
+
             <h1>Build Better Habits.</h1>
             <h1>Become Stronger.</h1>
+
             <p>
               Track your daily habits, stay consistent, and
               work toward your fitness goals.
             </p>
+
             <button onClick={() => setStarted(true)}>
               Get Started
             </button>
@@ -111,31 +228,33 @@ function App() {
           </section>
         )}
 
-
-
+        {/* Feature Cards */}
         <section className="features">
+
+          {/* Daily Habits */}
           <div className="feature-card">
             <h3>Daily Habits</h3>
+
             <p className="current-date">
-              📅 Today: {today}
+              📅 Today: {displayDate}
             </p>
-            <p>
-              🔥 Current Streak: {streak}
-            </p>
+
+            <p>🔥 Current Streak: {streak} days</p>
+
             <input
               type="text"
               placeholder="Enter a new habit..."
               value={newHabit}
               onChange={(e) => setNewHabit(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  addHabit()
-                }
+                if (e.key === 'Enter') addHabit()
               }}
             />
+
             <button onClick={addHabit}>
               Add Habit
             </button>
+
             <p>
               Completed: {completedCount} / {totalHabits}
               {' '}({progressPercentage}%)
@@ -144,46 +263,25 @@ function App() {
             <div className="progress-track">
               <div
                 className="progress-fill"
-                style={{ width: `${progress}%` }}
+                style={{ width: `${progressPercentage}%` }}
               />
             </div>
 
-
             {habits.map((habit) => (
-              <div key={habit.id}>
+              <div className="habit-item" key={habit.id}>
                 <label>
-
                   <input
                     type="checkbox"
                     checked={habit.completed}
-                    onChange={() => {
-                      setHabits((previousHabits) =>
-                        previousHabits.map((item) =>
-                          item.id === habit.id
-                            ? { ...item, completed: !item.completed }
-                            : item
-                        )
-                      )
-
-                      setLastCompletedDate(today)
-
-                      if (!habit.completed) {
-                        setStreak((previousStreak) => previousStreak + 1)
-                      }
-                    }}
+                    onChange={() => toggleHabit(habit)}
                   />
                   {' '}
                   {habit.name}
                 </label>
+
                 <button
                   className="delete-button"
-                  onClick={() => {
-                    setHabits((previousHabits) =>
-                      previousHabits.filter(
-                        (item) => item.id !== habit.id
-                      )
-                    )
-                  }}
+                  onClick={() => deleteHabit(habit.id)}
                 >
                   Delete
                 </button>
@@ -191,17 +289,128 @@ function App() {
             ))}
           </div>
 
+          {/* Fitness Tracker */}
           <div className="feature-card">
             <h3>Fitness Tracker</h3>
+
             <p>Keep track of your workouts and progress.</p>
+
+            <input
+              type="text"
+              placeholder="Workout name..."
+              value={workoutName}
+              onChange={(e) => setWorkoutName(e.target.value)}
+            />
+
+            <input
+              type="number"
+              placeholder="Duration (minutes)"
+              min="1"
+              value={workoutDuration}
+              onChange={(e) =>
+                setWorkoutDuration(e.target.value)
+              }
+            />
+
+            <button onClick={addWorkout}>
+              Add Workout
+            </button>
+
+            <h4>Workout History</h4>
+
+            <p>
+              Total Workouts: {workouts.length}
+            </p>
+
+            <p>
+              Total Duration: {totalWorkoutMinutes} minutes
+            </p>
+
+            {workouts.length === 0 ? (
+              <p>No workouts added yet.</p>
+            ) : (
+              workouts.map((workout) => (
+                <div className="workout-item" key={workout.id}>
+                  <p>
+                    <strong>{workout.name}</strong>
+                    {' '}— {workout.duration} minutes
+                  </p>
+
+                  <small>{workout.date}</small>
+
+                  <button
+                    className="delete-button"
+                    onClick={() => deleteWorkout(workout.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))
+            )}
           </div>
 
+          {/* AI Trainer */}
           <div className="feature-card">
-            <h3>AI Trainer</h3>
-            <p>Get personalized fitness guidance.</p>
-          </div>
-        </section>
+            <h3>🤖 AI Fitness Trainer</h3>
 
+            <p>Select your fitness goal to get guidance.</p>
+
+            <select
+              value={fitnessGoal}
+              onChange={(e) => setFitnessGoal(e.target.value)}
+            >
+              <option value="general">General Fitness</option>
+              <option value="strength">Build Strength</option>
+              <option value="flexibility">Improve Flexibility</option>
+              <option value="energy">Improve Energy</option>
+            </select>
+
+            <div className="trainer-result">
+
+              {fitnessGoal === 'general' && (
+                <>
+                  <h4>General Fitness Plan</h4>
+                  <p>
+                    Try comfortable walking, gentle movement,
+                    and regular breaks.
+                  </p>
+                </>
+              )}
+
+              {fitnessGoal === 'strength' && (
+                <>
+                  <h4>Strength Guidance</h4>
+                  <p>
+                    Try beginner-friendly bodyweight movements
+                    with proper rest.
+                  </p>
+                </>
+              )}
+
+              {fitnessGoal === 'flexibility' && (
+                <>
+                  <h4>Flexibility Guidance</h4>
+                  <p>
+                    Try gentle stretching and simple mobility
+                    exercises. Never force a stretch.
+                  </p>
+                </>
+              )}
+
+              {fitnessGoal === 'energy' && (
+                <>
+                  <h4>Energy Guidance</h4>
+                  <p>
+                    Maintain a regular sleep schedule, stay
+                    hydrated, and include enjoyable daily movement.
+                  </p>
+                </>
+              )}
+
+            </div>
+          </div>
+
+        </section>
       </main>
     </div>
   )
