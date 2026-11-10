@@ -13,10 +13,10 @@ function App() {
       return saved
         ? JSON.parse(saved)
         : [
-            { id: 1, name: 'Drink water', completed: false },
-            { id: 2, name: 'Exercise', completed: false },
-            { id: 3, name: 'Read for 20 minutes', completed: false },
-          ]
+          { id: 1, name: 'Drink water', completed: false },
+          { id: 2, name: 'Exercise', completed: false },
+          { id: 3, name: 'Read for 20 minutes', completed: false },
+        ]
     } catch {
       return []
     }
@@ -189,6 +189,34 @@ function App() {
     (total, workout) => total + workout.duration,
     0
   )
+
+
+  // Weekly Workout Activity
+  const weeklyActivity = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date()
+    date.setDate(date.getDate() - (6 - index))
+
+    const dateString = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, '0'),
+      String(date.getDate()).padStart(2, '0'),
+    ].join('-')
+
+    const minutes = workouts
+      .filter((workout) => workout.date === dateString)
+      .reduce((total, workout) => total + workout.duration, 0)
+
+    return {
+      day: date.toLocaleDateString('en-IN', { weekday: 'short' }),
+      minutes,
+    }
+  })
+
+  const maxWeeklyMinutes = Math.max(
+    ...weeklyActivity.map((day) => day.minutes),
+    30
+  )
+
 
   return (
     <div className="app">
@@ -409,6 +437,41 @@ function App() {
 
             </div>
           </div>
+
+
+          {/* Weekly Activity */}
+          <div className="feature-card weekly-card">
+            <h3>📊 Weekly Activity</h3>
+            <p>Your workout activity over the last 7 days.</p>
+
+            <div className="weekly-chart">
+              {weeklyActivity.map((day, index) => (
+                <div className="chart-column" key={index}>
+                  <span className="chart-value">
+                    {day.minutes}m
+                  </span>
+
+                  <div className="chart-bar-container">
+                    <div
+                      className="chart-bar"
+                      style={{
+                        height: `${(day.minutes / maxWeeklyMinutes) * 100}%`,
+                      }}
+                    />
+                  </div>
+
+                  <span className="chart-day">{day.day}</span>
+                </div>
+              ))}
+            </div>
+
+            <h4>
+              This week's workout time: {weeklyActivity.reduce(
+                (total, day) => total + day.minutes, 0
+              )} minutes
+            </h4>
+          </div>
+
 
         </section>
       </main>

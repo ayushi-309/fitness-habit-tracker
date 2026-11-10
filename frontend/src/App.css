@@ -323,3 +323,66 @@ button {
     align-items: flex-start;
   }
 }
+
+
+.weekly-card {
+  grid-column: 1 / -1;
+}
+
+.weekly-chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  gap: 15px;
+  height: 220px;
+  margin: 25px 0;
+  padding: 15px 5px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.chart-column {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.chart-bar-container {
+  width: 100%;
+  max-width: 45px;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  background: #eff6ff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.chart-bar {
+  width: 100%;
+  min-height: 0;
+  background: linear-gradient(180deg, #60a5fa, #2563eb);
+  border-radius: 8px;
+  transition: height 0.4s ease;
+}
+
+.chart-value,
+.chart-day {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .weekly-chart {
+    gap: 6px;
+  }
+
+  .chart-value,
+  .chart-day {
+    font-size: 10px;
+  }
+}
